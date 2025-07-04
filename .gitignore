@@ -16,6 +16,7 @@ yarn-error.log*
 
 # === IDE (Visual Studio & VS Code) ===
 .vscode/
+.vs/
 .idea/
 *.code-workspace
 
