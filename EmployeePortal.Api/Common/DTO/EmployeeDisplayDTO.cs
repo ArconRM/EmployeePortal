@@ -6,7 +6,7 @@ namespace EmployeePortal.Api.Common.DTO
     {
         public Guid Uuid { get; set; }
 
-        public Department Department { get; set; }
+        public DepartmentDTO Department { get; set; }
 
         public string FullName { get; set; }
 

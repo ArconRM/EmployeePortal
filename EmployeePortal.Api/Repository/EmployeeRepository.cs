@@ -1,29 +1,20 @@
-﻿using EmployeePortal.Api.Entities;
+﻿using EmployeePortal.Api.Core;
+using EmployeePortal.Api.Entities;
 using EmployeePortal.Api.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeePortal.Api.Repository
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
     {
         private readonly EmployeePortalDbContext _context;
 
-        public EmployeeRepository(EmployeePortalDbContext context)
+        public EmployeeRepository(EmployeePortalDbContext context): base(context)
         {
             _context = context;
         }
 
-        public async Task<Employee> CreateEmployeeAsync(Employee employee, CancellationToken token)
-        {
-            DbSet<Employee> set= _context.Set<Employee>();
-
-            await set.AddAsync(employee, token);
-            await _context.SaveChangesAsync(token);
-
-            return employee;
-        }
-
-        public async Task<IEnumerable<Employee>> GetAllEmployeesAsync(CancellationToken token)
+        public override async Task<IEnumerable<Employee>> GetAllAsync(CancellationToken token)
         {
             DbSet<Employee> set = _context.Set<Employee>();
 
@@ -33,7 +24,7 @@ namespace EmployeePortal.Api.Repository
                 .ToListAsync(token);
         }
 
-        public async Task<Employee> GetEmployeeAsync(Guid uuid, CancellationToken token)
+        public override async Task<Employee> GetAsync(Guid uuid, CancellationToken token)
         {
             DbSet<Employee> set = _context.Set<Employee>();
 
@@ -42,29 +33,6 @@ namespace EmployeePortal.Api.Repository
                 .Include(e => e.Department)
                 .Where(e => e.Uuid == uuid)
                 .FirstOrDefaultAsync(token);
-        }
-
-        public async Task<Employee> UpdateEmployeeAsync(Employee employee, CancellationToken token)
-        {
-            DbSet<Employee> set = _context.Set<Employee>();
-
-            set.Update(employee);
-            await _context.SaveChangesAsync(token);
-
-            return employee;
-        }
-
-        public async Task DeleteEmployeeAsync(Guid uuid, CancellationToken token)
-        {
-            DbSet<Employee> set = _context.Set<Employee>();
-
-            Employee employee = new()
-            {
-                Uuid = uuid
-            };
-
-            set.Remove(employee);
-            await _context.SaveChangesAsync(token);
         }
     }
 }

@@ -3,7 +3,7 @@ using EmployeePortal.Api.Entities;
 
 namespace EmployeePortal.Api.Repository.Interfaces
 {
-    public interface IEmployeeRepository: IRepository<Employee>
+    public interface IDepartmentRepository: IRepository<Department>
     {
     }
 }

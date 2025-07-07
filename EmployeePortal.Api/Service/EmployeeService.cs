@@ -15,27 +15,27 @@ namespace EmployeePortal.Api.Service
 
         public async Task<Employee> CreateEmployeeAsync(Employee employee, CancellationToken token)
         {
-            return await _employeeRepository.CreateEmployeeAsync(employee, token);
+            return await _employeeRepository.CreateAsync(employee, token);
         }
 
         public async Task<IEnumerable<Employee>> GetAllEmployeesAsync(CancellationToken token)
         {
-            return await _employeeRepository.GetAllEmployeesAsync(token);
+            return await _employeeRepository.GetAllAsync(token);
         }
 
         public async Task<Employee> GetEmployeeAsync(Guid uuid, CancellationToken token)
         {
-            return await _employeeRepository.GetEmployeeAsync(uuid, token);
+            return await _employeeRepository.GetAsync(uuid, token);
         }
 
         public async Task<Employee> UpdateEmployeeAsync(Employee employee, CancellationToken token)
         {
-            return await _employeeRepository.UpdateEmployeeAsync(employee, token);
+            return await _employeeRepository.UpdateAsync(employee, token);
         }
 
         public async Task DeleteEmployeeAsync(Guid uuid, CancellationToken token)
         {
-            await _employeeRepository.DeleteEmployeeAsync(uuid, token);
+            await _employeeRepository.DeleteAsync(uuid, token);
         }
 
     }

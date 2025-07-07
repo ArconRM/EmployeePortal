@@ -8,6 +8,8 @@ namespace EmployeePortal.Api.AutoMapper
     {
         public MappingProfile()
         {
+            CreateMap<Department, DepartmentDTO>().ReverseMap();
+
             CreateMap<Employee, EmployeeCreateDTO>().ReverseMap();
 
             CreateMap<Employee, EmployeeDisplayDTO>().ReverseMap();
