@@ -29,7 +29,7 @@ namespace EmployeePortal.Api.Controllers
             try
             {
                 Employee employee = _mapper.Map<EmployeeCreateDTO, Employee>(employeeDTO);
-                Employee newEmployee = await _employeeService.CreateEmployeeAsync(employee, token);
+                Employee newEmployee = await _employeeService.CreateAsync(employee, token);
                 EmployeeCreateDTO newEmployeeDTO = _mapper.Map<Employee, EmployeeCreateDTO>(newEmployee);
                 return Ok(newEmployeeDTO);
             }
@@ -45,7 +45,7 @@ namespace EmployeePortal.Api.Controllers
         {
             try
             {
-                IEnumerable<Employee> employees = await _employeeService.GetAllEmployeesAsync(token);
+                IEnumerable<Employee> employees = await _employeeService.GetAllAsync(token);
                 IEnumerable<EmployeeDisplayDTO> employeesDto = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeDisplayDTO>>(employees);
                 return Ok(employeesDto);
             }
@@ -62,7 +62,7 @@ namespace EmployeePortal.Api.Controllers
 
             try
             {
-                var employee = await _employeeService.GetEmployeeAsync(id, token);
+                var employee = await _employeeService.GetAsync(id, token);
                 var employeeDto = _mapper.Map<Employee, EmployeeDisplayDTO>(employee);
                 return Ok(employeeDto);
             }

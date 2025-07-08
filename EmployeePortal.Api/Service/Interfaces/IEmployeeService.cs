@@ -1,17 +1,9 @@
-﻿using EmployeePortal.Api.Entities;
+﻿using EmployeePortal.Api.Core.Interfaces;
+using EmployeePortal.Api.Entities;
 
 namespace EmployeePortal.Api.Service.Interfaces
 {
-    public interface IEmployeeService
+    public interface IEmployeeService: IService<Employee>
     {
-        public Task<Employee> CreateEmployeeAsync(Employee employee, CancellationToken token);
-
-        public Task<Employee> GetEmployeeAsync(Guid uuid, CancellationToken token);
-
-        public Task<IEnumerable<Employee>> GetAllEmployeesAsync(CancellationToken token);
-
-        public Task<Employee> UpdateEmployeeAsync(Employee employee, CancellationToken token);
-
-        public Task DeleteEmployeeAsync(Guid uuid, CancellationToken token);
     }
 }
