@@ -51,22 +51,7 @@ export class EmployeesComponent {
 
   constructor() {
     effect(() => {
-      this.loading.set(true);
-      const filters = {
-        fullName: this.fullNameFilter(),
-        department: this.departmentFilter(),
-        birthDate: this.birthDateFilter() ? this.#datePipe.transform(this.birthDateFilter(), 'yyyy-MM-dd')! : '',
-        employmentDate: this.employmentDateFilter() ? this.#datePipe.transform(this.employmentDateFilter(), 'yyyy-MM-dd')! : '',
-        salary: this.salaryFilter()
-      };
-      const sort = { column: this.sortColumn(), direction: this.sortDirection() };
-
-      this.#employeeService.getEmployees(this.pageNumber(), this.pageSize(), filters, sort)
-        .subscribe(response => {
-          this.employees.set(response.items);
-          this.totalCount.set(response.totalCount);
-          this.loading.set(false);
-        });
+      this.loadEmployees();
     }, { allowSignalWrites: true });
   }
 
@@ -83,7 +68,7 @@ export class EmployeesComponent {
     const modalRef = this.#modalService.open(EmployeeDialogComponent, { size: 'lg' });
     modalRef.result.then((result) => {
       if (result) {
-        this.pageNumber.set(1); // Перезагружаем данные
+        this.loadEmployees();
       }
     }).catch(() => {});
   }
@@ -94,7 +79,7 @@ export class EmployeesComponent {
 
     modalRef.result.then((result) => {
       if (result) {
-        this.pageNumber.set(this.pageNumber()); // Перезагружаем текущую страницу
+        this.loadEmployees();
       }
     }).catch(() => {});
   }
@@ -107,9 +92,29 @@ export class EmployeesComponent {
     modalRef.result.then((confirmed) => {
       if (confirmed) {
         this.#employeeService.deleteEmployee(employee.uuid).subscribe(() => {
-          this.pageNumber.set(this.pageNumber()); // Перезагружаем текущую страницу
+          this.loadEmployees();
         });
       }
     }).catch(() => {});
+  }
+
+  loadEmployees() {
+    this.loading.set(true);
+
+    const filters = {
+      fullName: this.fullNameFilter(),
+      department: this.departmentFilter(),
+      birthDate: this.birthDateFilter() ? this.#datePipe.transform(this.birthDateFilter(), 'yyyy-MM-dd')! : '',
+      employmentDate: this.employmentDateFilter() ? this.#datePipe.transform(this.employmentDateFilter(), 'yyyy-MM-dd')! : '',
+      salary: this.salaryFilter()
+    };
+    const sort = { column: this.sortColumn(), direction: this.sortDirection() };
+
+    this.#employeeService.getEmployees(this.pageNumber(), this.pageSize(), filters, sort)
+      .subscribe(response => {
+        this.employees.set(response.items);
+        this.totalCount.set(response.totalCount);
+        this.loading.set(false);
+      });
   }
 }

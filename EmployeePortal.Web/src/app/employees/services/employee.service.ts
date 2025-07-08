@@ -45,11 +45,11 @@ export class EmployeeService {
     return this.http.post<Employee>(`${this.apiUrl}/Employee/CreateEmployee`, payload);
   }
 
-  updateEmployee(uuid: string, payload: EmployeePayload): Observable<Employee> {
-    return this.http.put<Employee>(`${this.apiUrl}/Employee/GetEmployee/${uuid}`, payload);
+  updateEmployee(payload: EmployeePayload): Observable<Employee> {
+    return this.http.patch<Employee>(`${this.apiUrl}/Employee/UpdateEmployee`, payload);
   }
 
   deleteEmployee(uuid: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/Employee/DeleteEmployee/${uuid}`);
+    return this.http.delete<void>(`${this.apiUrl}/Employee/DeleteEmployee?id=${uuid}`);
   }
 }

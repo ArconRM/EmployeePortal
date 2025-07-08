@@ -67,7 +67,7 @@ export class EmployeeDialogComponent implements OnInit {
 
     const payload = this.form.getRawValue();
     const request$ = this.isEditMode()
-      ? this.#employeeService.updateEmployee(this.employee!.uuid, payload)
+      ? this.#employeeService.updateEmployee(payload)
       : this.#employeeService.createEmployee(payload);
 
     request$.subscribe(() => this.activeModal.close(true));
