@@ -21,14 +21,14 @@ namespace EmployeePortal.Api.Controllers
         }
 
         [HttpPost(nameof(CreateDepartment))]
-        public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDTO departmentDTO, CancellationToken token)
+        public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDTO departmentDto, CancellationToken token)
         {
             try
             {
-                Department department = _mapper.Map<DepartmentDTO, Department>(departmentDTO);
+                Department department = _mapper.Map<DepartmentDTO, Department>(departmentDto);
                 Department newDepartment = await _departmentService.CreateAsync(department, token);
-                DepartmentDTO newDepartmentDTO = _mapper.Map<Department, DepartmentDTO>(newDepartment);
-                return Ok(newDepartmentDTO);
+                DepartmentDTO newDepartmentDto = _mapper.Map<Department, DepartmentDTO>(newDepartment);
+                return Ok(newDepartmentDto);
             }
             catch (Exception ex)
             {

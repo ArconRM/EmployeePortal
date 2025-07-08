@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EmployeePortal.Api.Common;
 using EmployeePortal.Api.Common.DTO;
 using EmployeePortal.Api.Entities;
 using EmployeePortal.Api.Service.Interfaces;
@@ -25,20 +26,20 @@ namespace EmployeePortal.Api.Controllers
 
         [HttpPost(nameof(CreateEmployee))]
         public async Task<IActionResult> CreateEmployee(
-            [FromBody] EmployeeCreateDTO employeeDTO,
+            [FromBody] EmployeeCreateDTO employeeDto,
             CancellationToken token)
         {
             try
             {
-                Employee employee = _mapper.Map<EmployeeCreateDTO, Employee>(employeeDTO);
+                Employee employee = _mapper.Map<EmployeeCreateDTO, Employee>(employeeDto);
                 Employee newEmployee = await _employeeService.CreateAsync(employee, token);
-                EmployeeCreateDTO newEmployeeDTO = _mapper.Map<Employee, EmployeeCreateDTO>(newEmployee);
-                return Ok(newEmployeeDTO);
+                EmployeeCreateDTO newEmployeeDto = _mapper.Map<Employee, EmployeeCreateDTO>(newEmployee);
+                return Ok(newEmployeeDto);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                throw;
+                return StatusCode(500, "Internal server error");
             }
         }
 
@@ -50,18 +51,26 @@ namespace EmployeePortal.Api.Controllers
         {
             try
             {
-                IEnumerable<Employee> employees = await _employeeService.GetAllPaginatedAsync(
+                PaginatedResult<Employee> employeesResult = await _employeeService.GetAllPaginatedAsync(
                     pageNumber,
                     pageSize,
                     token);
 
-                IEnumerable<EmployeeDisplayDTO> employeesDto = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeDisplayDTO>>(employees);
-                return Ok(employeesDto);
+                IEnumerable<EmployeeDisplayDTO> employeesDto =
+                    _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeDisplayDTO>>(employeesResult.Items);
+
+                var response = new
+                {
+                    items = employeesDto,
+                    totalCount = employeesResult.TotalCount
+                };
+
+                return Ok(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                throw;
+                return StatusCode(500, "Internal server error");
             }
         }
 
@@ -70,7 +79,6 @@ namespace EmployeePortal.Api.Controllers
             Guid id,
             CancellationToken token)
         {
-
             try
             {
                 var employee = await _employeeService.GetAsync(id, token);
@@ -80,7 +88,7 @@ namespace EmployeePortal.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                throw;
+                return StatusCode(500, "Internal server error");
             }
         }
     }

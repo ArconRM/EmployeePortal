@@ -1,4 +1,5 @@
-﻿using EmployeePortal.Api.Core.BaseEntities;
+﻿using EmployeePortal.Api.Common;
+using EmployeePortal.Api.Core.BaseEntities;
 using EmployeePortal.Api.Entities;
 using EmployeePortal.Api.Repository.Interfaces;
 using EmployeePortal.Api.Service.Interfaces;
@@ -14,7 +15,7 @@ namespace EmployeePortal.Api.Service
             _employeeRepository = employeeRepository;
         }
 
-        public async Task<IEnumerable<Employee>> GetAllPaginatedAsync(int pageNumber, int pageSize, CancellationToken token)
+        public async Task<PaginatedResult<Employee>> GetAllPaginatedAsync(int pageNumber, int pageSize, CancellationToken token)
         {
             return await _employeeRepository.GetAllPaginatedAsync(pageNumber, pageSize, token);
         }

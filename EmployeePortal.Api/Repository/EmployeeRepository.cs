@@ -1,4 +1,5 @@
-﻿using EmployeePortal.Api.Core;
+﻿using EmployeePortal.Api.Common;
+using EmployeePortal.Api.Core;
 using EmployeePortal.Api.Entities;
 using EmployeePortal.Api.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -24,15 +25,23 @@ namespace EmployeePortal.Api.Repository
                 .ToListAsync(token);
         }
 
-        public async Task<IEnumerable<Employee>> GetAllPaginatedAsync(int pageNumber, int pageSize, CancellationToken token)
+        public async Task<PaginatedResult<Employee>> GetAllPaginatedAsync(
+            int pageNumber,
+            int pageSize,
+            CancellationToken token)
         {
             DbSet<Employee> set = _context.Set<Employee>();
 
-            return await set.AsNoTracking()
+            int totalCount = await set.CountAsync(token);
+
+            var items = await set
+                .AsNoTracking()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Include(e => e.Department)
                 .ToListAsync(token);
+
+            return new PaginatedResult<Employee> { Items = items, TotalCount = totalCount };
         }
 
         public override async Task<Employee> GetAsync(Guid uuid, CancellationToken token)
