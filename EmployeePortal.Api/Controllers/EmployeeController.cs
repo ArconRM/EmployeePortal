@@ -91,5 +91,41 @@ namespace EmployeePortal.Api.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        [HttpPatch(nameof(UpdateEmployee))]
+        public async Task<IActionResult> UpdateEmployee(
+            [FromBody] EmployeeCreateDTO employeeDto,
+            CancellationToken token)
+        {
+            try
+            {
+                Employee employee = _mapper.Map<EmployeeCreateDTO, Employee>(employeeDto);
+                Employee updatedEmployee = await _employeeService.UpdateAsync(employee, token);
+                EmployeeCreateDTO updatedEmployeeDto = _mapper.Map<Employee, EmployeeCreateDTO>(updatedEmployee);
+                return Ok(updatedEmployeeDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpDelete(nameof(DeleteEmployee))]
+        public async Task<IActionResult> DeleteEmployee(
+            Guid id,
+            CancellationToken token)
+        {
+            try
+            {
+                await _employeeService.DeleteAsync(id, token);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }
