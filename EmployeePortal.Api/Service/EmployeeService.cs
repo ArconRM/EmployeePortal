@@ -1,4 +1,5 @@
 ﻿using EmployeePortal.Api.Common;
+using EmployeePortal.Api.Common.DTO;
 using EmployeePortal.Api.Core.BaseEntities;
 using EmployeePortal.Api.Entities;
 using EmployeePortal.Api.Repository.Interfaces;
@@ -15,9 +16,11 @@ namespace EmployeePortal.Api.Service
             _employeeRepository = employeeRepository;
         }
 
-        public async Task<PaginatedResult<Employee>> GetAllPaginatedAsync(int pageNumber, int pageSize, CancellationToken token)
+        public async Task<PaginatedResult<Employee>> GetAllPaginatedAsync(
+            EmployeeQueryParameters queryParameters,
+            CancellationToken token)
         {
-            return await _employeeRepository.GetAllPaginatedAsync(pageNumber, pageSize, token);
+            return await _employeeRepository.GetAllPaginatedAsync(queryParameters, token);
         }
     }
 }

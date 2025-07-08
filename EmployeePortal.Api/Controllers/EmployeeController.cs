@@ -45,15 +45,13 @@ namespace EmployeePortal.Api.Controllers
 
         [HttpGet(nameof(GetAllEmployees))]
         public async Task<IActionResult> GetAllEmployees(
-            int pageNumber,
-            int pageSize,
-            CancellationToken token)
+    [FromQuery] EmployeeQueryParameters queryParameters,
+    CancellationToken token)
         {
             try
             {
                 PaginatedResult<Employee> employeesResult = await _employeeService.GetAllPaginatedAsync(
-                    pageNumber,
-                    pageSize,
+                    queryParameters,
                     token);
 
                 IEnumerable<EmployeeDisplayDTO> employeesDto =

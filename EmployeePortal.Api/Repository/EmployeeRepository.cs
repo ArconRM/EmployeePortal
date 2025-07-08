@@ -1,4 +1,5 @@
 ﻿using EmployeePortal.Api.Common;
+using EmployeePortal.Api.Common.DTO;
 using EmployeePortal.Api.Core;
 using EmployeePortal.Api.Entities;
 using EmployeePortal.Api.Repository.Interfaces;
@@ -26,18 +27,69 @@ namespace EmployeePortal.Api.Repository
         }
 
         public async Task<PaginatedResult<Employee>> GetAllPaginatedAsync(
-            int pageNumber,
-            int pageSize,
-            CancellationToken token)
+    EmployeeQueryParameters queryParameters,
+    CancellationToken token)
         {
-            DbSet<Employee> set = _context.Set<Employee>();
+            IQueryable<Employee> query = _context.Set<Employee>().AsNoTracking();
 
-            int totalCount = await set.CountAsync(token);
+            if (!string.IsNullOrWhiteSpace(queryParameters.FullName))
+            {
+                query = query.Where(e => e.FullName.Contains(queryParameters.FullName));
+            }
 
-            var items = await set
-                .AsNoTracking()
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+            if (!string.IsNullOrWhiteSpace(queryParameters.Department))
+            {
+                query = query.Where(e => e.Department.Name.Contains(queryParameters.Department));
+            }
+
+            if (queryParameters.BirthDate.HasValue)
+            {
+                query = query.Where(e => e.BirthDate == queryParameters.BirthDate.Value);
+            }
+
+            if (queryParameters.EmploymentDate.HasValue)
+            {
+                query = query.Where(e => e.EmploymentDate == queryParameters.EmploymentDate.Value);
+            }
+
+            if (queryParameters.Salary.HasValue)
+            {
+                query = query.Where(e => e.Salary == queryParameters.Salary.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(queryParameters.SortColumn))
+            {
+                var isDescending = queryParameters.SortDirection?.ToLower() == "desc";
+
+                query = (queryParameters.SortColumn.ToLower()) switch
+                {
+                    "department" => isDescending
+                        ? query.OrderByDescending(e => e.Department.Name)
+                        : query.OrderBy(e => e.Department.Name),
+                    "birthdate" => isDescending
+                        ? query.OrderByDescending(e => e.BirthDate)
+                        : query.OrderBy(e => e.BirthDate),
+                    "employmentdate" => isDescending
+                        ? query.OrderByDescending(e => e.EmploymentDate)
+                        : query.OrderBy(e => e.EmploymentDate),
+                    "salary" => isDescending
+                        ? query.OrderByDescending(e => e.Salary)
+                        : query.OrderBy(e => e.Salary),
+                    _ => isDescending
+                        ? query.OrderByDescending(e => e.FullName)
+                        : query.OrderBy(e => e.FullName)
+                };
+            }
+            else
+            {
+                query = query.OrderBy(e => e.FullName);
+            }
+
+            int totalCount = await query.CountAsync(token);
+
+            var items = await query
+                .Skip((queryParameters.PageNumber - 1) * queryParameters.PageSize)
+                .Take(queryParameters.PageSize)
                 .Include(e => e.Department)
                 .ToListAsync(token);
 
