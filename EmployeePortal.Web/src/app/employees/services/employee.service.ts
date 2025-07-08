@@ -4,7 +4,7 @@ import {Observable} from 'rxjs'
 import {PaginatedResponse} from '../models/paginated-response.model';
 import {Department} from '../models/department.model';
 import {Employee} from '../models/employee.model';
-import {EmployeePayload} from '../models/employee-payload.model';
+import { EmployeeCreatePayload, EmployeeUpdatePayload } from '../models/employee-payload.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,11 +41,11 @@ export class EmployeeService {
     return this.http.get<Department[]>(`${this.apiUrl}/Department/GetAllDepartments`);
   }
 
-  createEmployee(payload: EmployeePayload): Observable<Employee> {
+  createEmployee(payload: EmployeeCreatePayload): Observable<Employee> {
     return this.http.post<Employee>(`${this.apiUrl}/Employee/CreateEmployee`, payload);
   }
 
-  updateEmployee(payload: EmployeePayload): Observable<Employee> {
+  updateEmployee(payload: EmployeeUpdatePayload): Observable<Employee> {
     return this.http.patch<Employee>(`${this.apiUrl}/Employee/UpdateEmployee`, payload);
   }
 

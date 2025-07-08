@@ -12,6 +12,8 @@ namespace EmployeePortal.Api.AutoMapper
 
             CreateMap<Employee, EmployeeCreateDTO>().ReverseMap();
 
+            CreateMap<Employee, EmployeeUpdateDTO>().ReverseMap();
+
             CreateMap<Employee, EmployeeDisplayDTO>().ReverseMap();
         }
     }

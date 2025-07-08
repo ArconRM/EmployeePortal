@@ -1,9 +1,10 @@
 import { Component, computed, inject, Input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbActiveModal, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeService } from '../employees/services/employee.service';
 import { Employee } from '../employees/models/employee.model';
 import { Department } from '../employees/models/department.model';
+import { EmployeeUpdatePayload } from '../employees/models/employee-payload.model';
 
 @Component({
   standalone: true,
@@ -26,6 +27,40 @@ import { Department } from '../employees/models/department.model';
           }
         </select>
       </div>
+      <div class="mb-3">
+        <label for="birthDate" class="form-label">Дата рождения</label>
+        <div class="input-group">
+          <input
+            id="birthDate"
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="dpBirthDate"
+            formControlName="birthDate"
+            ngbDatepicker
+            #d1="ngbDatepicker"
+          />
+          <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">📅</button>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="employmentDate" class="form-label">Дата приёма</label>
+        <div class="input-group">
+          <input
+            id="employmentDate"
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="dpEmploymentDate"
+            formControlName="employmentDate"
+            ngbDatepicker
+            #d2="ngbDatepicker"
+          />
+          <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">📅</button>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="salary" class="form-label">Оклад</label>
+        <input type="number" id="salary" class="form-control" formControlName="salary">
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">Отмена</button>
@@ -46,8 +81,8 @@ export class EmployeeDialogComponent implements OnInit {
   form = this.#fb.nonNullable.group({
     fullName: ['', Validators.required],
     departmentUuid: ['', Validators.required],
-    birthDate: ['', Validators.required],
-    employmentDate: ['', Validators.required],
+    birthDate: [null as NgbDateStruct | null, Validators.required],
+    employmentDate: [null as NgbDateStruct | null, Validators.required],
     salary: [0, [Validators.required, Validators.min(0)]]
   });
 
@@ -56,8 +91,11 @@ export class EmployeeDialogComponent implements OnInit {
 
     if (this.isEditMode() && this.employee) {
       this.form.patchValue({
-        ...this.employee,
-        departmentUuid: this.employee.department.uuid
+        fullName: this.employee.fullName,
+        departmentUuid: this.employee.department.uuid,
+        salary: this.employee.salary,
+        birthDate: this.parseDateToNgbDate(this.employee.birthDate),
+        employmentDate: this.parseDateToNgbDate(this.employee.employmentDate)
       });
     }
   }
@@ -65,11 +103,41 @@ export class EmployeeDialogComponent implements OnInit {
   onSave(): void {
     if (this.form.invalid) return;
 
-    const payload = this.form.getRawValue();
-    const request$ = this.isEditMode()
-      ? this.#employeeService.updateEmployee(payload)
-      : this.#employeeService.createEmployee(payload);
+    const formValue = this.form.getRawValue();
+    const payload = {
+      ...formValue,
+      birthDate: this.formatNgbDateToString(formValue.birthDate!),
+      employmentDate: this.formatNgbDateToString(formValue.employmentDate!)
+    };
 
-    request$.subscribe(() => this.activeModal.close(true));
+    if (this.isEditMode() && this.employee) {
+      const updatePayload: EmployeeUpdatePayload = {
+        ...payload,
+        uuid: this.employee.uuid
+      };
+      this.#employeeService.updateEmployee(updatePayload)
+        .subscribe(() => this.activeModal.close(true));
+    } else {
+      this.#employeeService.createEmployee(payload)
+        .subscribe(() => this.activeModal.close(true));
+    }
+  }
+
+  private parseDateToNgbDate(dateString: string): NgbDateStruct | null {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate()
+    };
+  }
+
+  private formatNgbDateToString(date: NgbDateStruct): string {
+    return `${date.year}-${this.padNumber(date.month)}-${this.padNumber(date.day)}`;
+  }
+
+  private padNumber(num: number): string {
+    return num.toString().padStart(2, '0');
   }
 }

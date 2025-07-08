@@ -94,14 +94,14 @@ namespace EmployeePortal.Api.Controllers
 
         [HttpPatch(nameof(UpdateEmployee))]
         public async Task<IActionResult> UpdateEmployee(
-            [FromBody] EmployeeCreateDTO employeeDto,
+            [FromBody] EmployeeUpdateDTO employeeDto,
             CancellationToken token)
         {
             try
             {
-                Employee employee = _mapper.Map<EmployeeCreateDTO, Employee>(employeeDto);
+                Employee employee = _mapper.Map<EmployeeUpdateDTO, Employee>(employeeDto);
                 Employee updatedEmployee = await _employeeService.UpdateAsync(employee, token);
-                EmployeeCreateDTO updatedEmployeeDto = _mapper.Map<Employee, EmployeeCreateDTO>(updatedEmployee);
+                EmployeeUpdateDTO updatedEmployeeDto = _mapper.Map<Employee, EmployeeUpdateDTO>(updatedEmployee);
                 return Ok(updatedEmployeeDto);
             }
             catch (Exception ex)
