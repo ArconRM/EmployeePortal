@@ -9,7 +9,7 @@ namespace EmployeePortal.Api.Repository
     {
         private readonly EmployeePortalDbContext _context;
 
-        public EmployeeRepository(EmployeePortalDbContext context): base(context)
+        public EmployeeRepository(EmployeePortalDbContext context) : base(context)
         {
             _context = context;
         }
@@ -20,6 +20,17 @@ namespace EmployeePortal.Api.Repository
 
             return await set
                 .AsNoTracking()
+                .Include(e => e.Department)
+                .ToListAsync(token);
+        }
+
+        public async Task<IEnumerable<Employee>> GetAllPaginatedAsync(int pageNumber, int pageSize, CancellationToken token)
+        {
+            DbSet<Employee> set = _context.Set<Employee>();
+
+            return await set.AsNoTracking()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Include(e => e.Department)
                 .ToListAsync(token);
         }

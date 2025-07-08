@@ -13,5 +13,10 @@ namespace EmployeePortal.Api.Service
         {
             _employeeRepository = employeeRepository;
         }
+
+        public async Task<IEnumerable<Employee>> GetAllPaginatedAsync(int pageNumber, int pageSize, CancellationToken token)
+        {
+            return await _employeeRepository.GetAllPaginatedAsync(pageNumber, pageSize, token);
+        }
     }
 }

@@ -24,7 +24,9 @@ namespace EmployeePortal.Api.Controllers
 
 
         [HttpPost(nameof(CreateEmployee))]
-        public async Task<IActionResult> CreateEmployee([FromBody] EmployeeCreateDTO employeeDTO, CancellationToken token)
+        public async Task<IActionResult> CreateEmployee(
+            [FromBody] EmployeeCreateDTO employeeDTO,
+            CancellationToken token)
         {
             try
             {
@@ -41,11 +43,18 @@ namespace EmployeePortal.Api.Controllers
         }
 
         [HttpGet(nameof(GetAllEmployees))]
-        public async Task<IActionResult> GetAllEmployees(CancellationToken token)
+        public async Task<IActionResult> GetAllEmployees(
+            int pageNumber,
+            int pageSize,
+            CancellationToken token)
         {
             try
             {
-                IEnumerable<Employee> employees = await _employeeService.GetAllAsync(token);
+                IEnumerable<Employee> employees = await _employeeService.GetAllPaginatedAsync(
+                    pageNumber,
+                    pageSize,
+                    token);
+
                 IEnumerable<EmployeeDisplayDTO> employeesDto = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeDisplayDTO>>(employees);
                 return Ok(employeesDto);
             }
@@ -57,7 +66,9 @@ namespace EmployeePortal.Api.Controllers
         }
 
         [HttpGet(nameof(GetEmployee))]
-        public async Task<IActionResult> GetEmployee(Guid id, CancellationToken token)
+        public async Task<IActionResult> GetEmployee(
+            Guid id,
+            CancellationToken token)
         {
 
             try
