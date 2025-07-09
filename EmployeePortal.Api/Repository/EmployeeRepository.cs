@@ -82,7 +82,7 @@ namespace EmployeePortal.Api.Repository
             }
             else
             {
-                query = query.OrderBy(e => e.FullName);
+                query = query.OrderBy(e => e.EmploymentDate);
             }
 
             int totalCount = await query.CountAsync(token);
