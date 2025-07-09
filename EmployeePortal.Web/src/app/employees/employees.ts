@@ -52,7 +52,7 @@ export class EmployeesComponent {
   constructor() {
     effect(() => {
       this.loadEmployees();
-    }, { allowSignalWrites: true });
+    }, {allowSignalWrites: true});
   }
 
   handleSort(column: string) {
@@ -65,23 +65,25 @@ export class EmployeesComponent {
   }
 
   openCreateDialog(): void {
-    const modalRef = this.#modalService.open(EmployeeDialogComponent, { size: 'lg' });
+    const modalRef = this.#modalService.open(EmployeeDialogComponent, {size: 'lg'});
     modalRef.result.then((result) => {
       if (result) {
         this.loadEmployees();
       }
-    }).catch(() => {});
+    }).catch(() => {
+    });
   }
 
   openEditDialog(employee: Employee): void {
-    const modalRef = this.#modalService.open(EmployeeDialogComponent, { size: 'lg' });
+    const modalRef = this.#modalService.open(EmployeeDialogComponent, {size: 'lg'});
     modalRef.componentInstance.employee = employee;
 
     modalRef.result.then((result) => {
       if (result) {
         this.loadEmployees();
       }
-    }).catch(() => {});
+    }).catch(() => {
+    });
   }
 
   openDeleteDialog(employee: Employee): void {
@@ -95,7 +97,8 @@ export class EmployeesComponent {
           this.loadEmployees();
         });
       }
-    }).catch(() => {});
+    }).catch(() => {
+    });
   }
 
   loadEmployees() {
@@ -108,7 +111,7 @@ export class EmployeesComponent {
       employmentDate: this.employmentDateFilter() ? this.#datePipe.transform(this.employmentDateFilter(), 'yyyy-MM-dd')! : '',
       salary: this.salaryFilter()
     };
-    const sort = { column: this.sortColumn(), direction: this.sortDirection() };
+    const sort = {column: this.sortColumn(), direction: this.sortDirection()};
 
     this.#employeeService.getEmployees(this.pageNumber(), this.pageSize(), filters, sort)
       .subscribe(response => {
