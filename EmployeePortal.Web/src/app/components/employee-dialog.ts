@@ -38,6 +38,8 @@ import { EmployeeUpdatePayload } from '../employees/models/employee-payload.mode
             formControlName="birthDate"
             ngbDatepicker
             #d1="ngbDatepicker"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
           />
           <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">📅</button>
         </div>
@@ -69,6 +71,9 @@ import { EmployeeUpdatePayload } from '../employees/models/employee-payload.mode
   `
 })
 export class EmployeeDialogComponent implements OnInit {
+  minDate = { year: 1900, month: 1, day: 1 };
+  maxDate = { year: 2025, month: 12, day: 31 };
+
   activeModal = inject(NgbActiveModal);
   #fb = inject(FormBuilder);
   #employeeService = inject(EmployeeService);

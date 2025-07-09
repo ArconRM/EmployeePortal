@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, computed, effect, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgbDatepickerModule, NgbModal, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeService } from './services/employee.service';
 import { Employee } from './models/employee.model';
 import { EmployeeDialogComponent } from '../components/employee-dialog';
@@ -14,7 +14,6 @@ import { ConfirmDialogComponent } from '../components/confirm-dialog';
     FormsModule,
     DatePipe,
     CurrencyPipe,
-    NgbDatepickerModule,
     NgbPagination
   ],
   providers: [DatePipe, CurrencyPipe],
