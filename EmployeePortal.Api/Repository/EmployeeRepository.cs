@@ -27,8 +27,8 @@ namespace EmployeePortal.Api.Repository
         }
 
         public async Task<PaginatedResult<Employee>> GetAllPaginatedAsync(
-    EmployeeQueryParameters queryParameters,
-    CancellationToken token)
+            EmployeeQueryParameters queryParameters,
+            CancellationToken token)
         {
             IQueryable<Employee> query = _context.Set<Employee>().AsNoTracking();
 
@@ -88,9 +88,9 @@ namespace EmployeePortal.Api.Repository
             int totalCount = await query.CountAsync(token);
 
             var items = await query
+                .Include(e => e.Department)
                 .Skip((queryParameters.PageNumber - 1) * queryParameters.PageSize)
                 .Take(queryParameters.PageSize)
-                .Include(e => e.Department)
                 .ToListAsync(token);
 
             return new PaginatedResult<Employee> { Items = items, TotalCount = totalCount };

@@ -45,8 +45,8 @@ namespace EmployeePortal.Api.Controllers
 
         [HttpGet(nameof(GetAllEmployees))]
         public async Task<IActionResult> GetAllEmployees(
-    [FromQuery] EmployeeQueryParameters queryParameters,
-    CancellationToken token)
+            [FromQuery] EmployeeQueryParameters queryParameters,
+            CancellationToken token)
         {
             try
             {
