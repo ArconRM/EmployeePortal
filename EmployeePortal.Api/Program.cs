@@ -33,6 +33,10 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
+var databasePath = Path.Combine(Directory.GetCurrentDirectory(), "Database");
+Directory.CreateDirectory(databasePath);
+AppDomain.CurrentDomain.SetData("DataDirectory", databasePath);
+
 builder.Services.AddDbContext<EmployeePortalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

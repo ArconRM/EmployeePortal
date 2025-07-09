@@ -13,7 +13,7 @@ namespace EmployeePortal.Api.Repository
 
         public EmployeePortalDbContext(DbContextOptions<EmployeePortalDbContext> options): base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
